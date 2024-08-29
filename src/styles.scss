@@ -1,1 +1,182 @@
-/* You can add global styles to this file, and also import other style files */
+$mainGray: #cccccc;
+$lightGray: #dddddd;
+$darkGray: #999999;
+$darkerGray: #888888;
+
+@font-face {
+  font-family: DSEG7Classic;
+  src: url("../public/fonts/dseg7-classic-latin-700-normal.woff2");
+}
+
+@font-face {
+  font-family: PublicPixelFont;
+  src: url("../public/fonts/PublicPixel-0W5Kv.ttf");
+}
+
+* {
+  box-sizing: border-box;
+  cursor: default;
+}
+
+html {
+  font-family: monospace;
+  margin: 0 auto;
+  user-select: none;
+}
+
+body {
+  text-align: center;
+  margin: 0 auto;
+}
+
+.win-95-border-emboss {
+  border: 6px solid;
+  border-top-color: $lightGray;
+  border-left-color: $lightGray;
+  border-right-color: $darkGray;
+  border-bottom-color: $darkerGray;
+}
+
+.win-95-border {
+  border: 6px solid;
+  border-top-color: $darkGray;
+  border-left-color: $darkerGray;
+  border-right-color: $lightGray;
+  border-bottom-color: $lightGray;
+}
+
+.win-95-border-small {
+  border: 1px solid;
+  border-top-color: $darkGray;
+  border-left-color: $darkerGray;
+  border-right-color: $lightGray;
+  border-bottom-color: $lightGray;
+}
+
+img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.game-container {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: $mainGray;
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px;
+}
+
+.counter {
+  font-family: DSEG7Classic;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3em;
+  height: 60px;
+  margin: 10px;
+  background-color: black;
+  color: red;
+}
+
+.counter-digits {
+  z-index: 1;
+}
+
+.counter-digit-background {
+  position: absolute;
+  top: 2px;
+  color: rgb(81, 0, 0);
+}
+
+.sun-button {
+  width: 60px;
+  height: 60px;
+  margin: 5px;
+}
+
+.matrix-container {
+  display: inline-flex;
+  flex-direction: column;
+  margin: 10px;
+  margin-top: 0;
+}
+
+.matrix-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.matrix-cell {
+  font-family: PublicPixelFont;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8em;
+  font-weight: bolder;
+  width: 50px;
+  background-color: $mainGray;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
+}
+
+.mine-cell {
+  background-image: url("../public/images/mine.png");
+  background-size: 60%;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.mine-cell.exploded {
+  background-color: red;
+}
+
+.flagged-cell {
+  background-image: url("../public/images/flag.png");
+  background-size: 60%;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.number-cell-1 {
+  color: blue;
+}
+
+.number-cell-2 {
+  color: green;
+}
+
+.number-cell-3 {
+  color: red;
+}
+
+.number-cell-4 {
+  color: darkblue;
+}
+
+.number-cell-5 {
+  color: darkred;
+}
+
+.number-cell-6 {
+ color: cadetblue;
+}
+
+.number-cell-7 {
+  color: black;
+}
+
+.number-cell-8 {
+  color: gray;
+}
+
+.revealed-cell {
+  border: 2px #999 solid;
+}
