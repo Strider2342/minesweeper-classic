@@ -1,15 +1,15 @@
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
 
 enum PlayerStatus {
-  Alive = "Alive",
-  Scared = "Scared",
-  Dead = "Dead",
+  Alive = 'Alive',
+  Scared = 'Scared',
+  Dead = 'Dead',
 }
 
 @Component({
-  selector: "app-player-indicator",
+  selector: 'app-player-indicator',
   standalone: true,
-  templateUrl: "./player-indicator.component.html",
+  templateUrl: './player-indicator.component.html',
 })
 export class PlayerIndicatorComponent {
   playerStatus = PlayerStatus.Alive;
