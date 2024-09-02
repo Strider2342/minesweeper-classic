@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, first, Observable } from 'rxjs';
 
 import { CellState } from '../components/cell/cell.component';
 
-import { boardData } from '../mock-data/board-matrix';
+// import { boardData } from '../mock-data/board-matrix';
 
 export enum GameStatus {
   NotStarted = 'NotStarted',
@@ -15,6 +15,7 @@ export enum GameStatus {
 export interface GameState {
   rows: number;
   columns: number;
+  mineCount: number;
   boardMatrix: CellState[][];
   gameStatus: GameStatus;
 }
@@ -26,6 +27,7 @@ export class GameStateService {
   private _gameState: GameState = {
     rows: 9,
     columns: 9,
+    mineCount: 30,
     boardMatrix: Array(9).fill(Array(9).fill({
       isFlagged: false,
       isRevealed: false,
@@ -43,26 +45,83 @@ export class GameStateService {
   }
 
   generateEmptyGameBoard(): CellState[][] {
-    return Array(this._gameState.rows).fill(Array(this._gameState.columns).fill({
-      isFlagged: false,
-      isRevealed: false,
-      isMine: false,
-      isExploded: false,
-      neighborCount: 0
-    }));
+    const boardData = new Array(this._gameState.rows).fill(null);
+
+    boardData.forEach((row, rowIndex) => {
+      boardData[rowIndex] = new Array(this._gameState.columns).fill({
+        isFlagged: false,
+        isRevealed: true,
+        isMine: false,
+        isExploded: false,
+        neighborCount: 0
+      });
+    });
+
+    return boardData;
   }
 
-  generateBoardBoard(): CellState[][] {
+  generateBoard(): CellState[][] {
+    // generate empty board
+    const boardData = this.generateEmptyGameBoard();
+
+    // generate mines
+    const mines = new Array(this._gameState.rows * this._gameState.columns)
+      .fill(null)
+      .map((x, i) => i)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, this._gameState.mineCount);
+
+    mines.forEach((mine) => {
+      const row = Math.floor(mine / this._gameState.columns);
+      const column = mine % this._gameState.columns;
+
+      boardData[row][column] = {
+        ...boardData[row][column],
+        isMine: true,
+      };
+    });
+
+    // generate number indicators
+    boardData.forEach((row, rowIndex) => {
+      row.forEach((cell, columnIndex) => {
+        if (cell.isMine) {
+          return;
+        }
+
+        let mineCount = 0;
+
+        for (let i = rowIndex - 1; i <= rowIndex + 1; i++) {
+          for (let j = columnIndex - 1; j <= columnIndex + 1; j++) {
+            if (i < 0 || i >= this._gameState.rows || j < 0 || j >= this._gameState.columns) {
+              continue;
+            }
+
+            if (boardData[i][j].isMine) {
+              mineCount++;
+            }
+          }
+        }
+
+        boardData[rowIndex][columnIndex] = {
+          ...boardData[rowIndex][columnIndex],
+          neighborCount: mineCount,
+        };
+      });
+    });
+
     return boardData;
   }
 
   startGame() {
-    if (this._gameState.gameStatus === GameStatus.NotStarted) {
-      this.gameStateSubject.next({
-        ...this._gameState,
-        boardMatrix: this.generateBoardBoard(),
-        gameStatus: GameStatus.InProgress,
-      });
-    }
+    this.gameState$.pipe(first()).subscribe((gameState) => {
+      if (gameState.gameStatus === GameStatus.NotStarted) {
+        console.log(gameState.gameStatus);
+        this.gameStateSubject.next({
+          ...this._gameState,
+          boardMatrix: this.generateBoard(),
+          gameStatus: GameStatus.InProgress,
+        });
+      }
+    });
   }
 }
