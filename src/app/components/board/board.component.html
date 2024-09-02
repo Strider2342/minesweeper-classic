@@ -1,8 +1,8 @@
 <div class="matrix-container win-95-border">
-  @for (row of boardData; track row) {
+  @for (row of boardData; track $index) {
     <div class="matrix-row">
-      @for (cell of row; track cell) {
-        <app-cell [state]="cell"></app-cell>
+      @for (cell of row; track $index) {
+        <app-cell [state]="cell" (cellClicked)="cellClicked($event)"></app-cell>
       }
     </div>
   }
