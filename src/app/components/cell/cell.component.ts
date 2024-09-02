@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 export interface CellState {
   isFlagged: boolean;
@@ -18,7 +18,13 @@ export interface CellState {
 export class CellComponent implements OnInit {
   @Input() state!: CellState;
 
+  @Output() cellClicked: EventEmitter<CellState> = new EventEmitter();
+
   ngOnInit(): void {
-    console.log(this.state);
+    // console.log(this.state);
+  }
+
+  handleClick() {
+    this.cellClicked.emit(this.state);
   }
 }
