@@ -13,12 +13,18 @@ export class BoardComponent {
   boardData: CellState[][] = [];
 
   constructor(private gameStateFacade: GameStateFacade) {
+    // this.gameStateFacade.gameState$.subscribe(console.log);
+
     this.gameStateFacade.boardMatrix$.subscribe((boardMatrix) => {
       this.boardData = boardMatrix;
     });
   }
 
   cellClicked(cell: CellState) {
-    this.gameStateFacade.startGame(cell.row, cell.column);
+    this.gameStateFacade.cellClicked(cell.row, cell.column);
+  }
+
+  cellRightClicked(cell: CellState) {
+    this.gameStateFacade.cellRightClicked(cell.row, cell.column);
   }
 }

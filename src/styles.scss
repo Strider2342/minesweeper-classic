@@ -29,12 +29,43 @@ body {
   margin: 0 auto;
 }
 
+.matrix-container {
+  display: inline-flex;
+  flex-direction: column;
+  margin: 10px;
+  margin-top: 0;
+}
+
+.matrix-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.matrix-cell {
+  font-family: PublicPixelFont;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8em;
+  font-weight: bolder;
+  width: 50px;
+  background-color: $mainGray;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
+  border: 2px #999 solid;
+}
+
 .win-95-border-emboss {
   border: 6px solid;
   border-top-color: $lightGray;
   border-left-color: $lightGray;
   border-right-color: $darkGray;
   border-bottom-color: $darkerGray;
+
+  &.clicked {
+    border: 2px #999 solid;
+  }
 }
 
 .win-95-border {
@@ -99,32 +130,6 @@ img {
   width: 60px;
   height: 60px;
   margin: 5px;
-}
-
-.matrix-container {
-  display: inline-flex;
-  flex-direction: column;
-  margin: 10px;
-  margin-top: 0;
-}
-
-.matrix-row {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-}
-
-.matrix-cell {
-  font-family: PublicPixelFont;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.8em;
-  font-weight: bolder;
-  width: 50px;
-  background-color: $mainGray;
-  margin: 0 auto;
-  aspect-ratio: 1 / 1;
 }
 
 .mine-cell {

@@ -2,7 +2,9 @@
   @for (row of boardData; track $index) {
     <div class="matrix-row">
       @for (cell of row; track $index) {
-        <app-cell [state]="cell" (cellClicked)="cellClicked($event)"></app-cell>
+        <app-cell [state]="cell" (cellClicked)="cellClicked($event)"
+          (cellRightClicked)="cellRightClicked($event)">
+        </app-cell>
       }
     </div>
   }

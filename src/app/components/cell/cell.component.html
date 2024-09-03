@@ -1,7 +1,7 @@
 <div class="matrix-cell" [class.win-95-border-emboss]="!state.isRevealed" [class.revealed-cell]="state.isRevealed"
   [class.mine-cell]="state.isRevealed && state.isMine" [class.flagged-cell]="state.isFlagged"
-  [class.exploded]="state.isExploded" (click)="handleClick()">
-  @if (state.neighborCount > 0) {
+  [class.exploded]="state.isExploded" [class.clicked]="mouseDown">
+  @if (state.isRevealed && state.neighborCount > 0) {
     <div class="number-cell-{{ state.neighborCount }}">{{ state.neighborCount }}</div>
   }
 </div>

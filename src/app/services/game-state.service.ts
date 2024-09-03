@@ -16,6 +16,7 @@ export interface GameState {
   rows: number;
   columns: number;
   mineCount: number;
+  remainingMines: number;
   boardMatrix: CellState[][];
   gameStatus: GameStatus;
 }
@@ -28,6 +29,7 @@ export class GameStateService {
     rows: 9,
     columns: 9,
     mineCount: 10,
+    remainingMines: 10,
     boardMatrix: [],
     gameStatus: GameStatus.NotStarted,
   };
@@ -39,6 +41,20 @@ export class GameStateService {
   }
 
   constructor() {
+    this._gameState.boardMatrix = this.generateEmptyGameBoard();
+    this.gameStateSubject.next(this._gameState);
+  }
+
+  init() {
+    this._gameState = {
+      rows: 9,
+      columns: 9,
+      mineCount: 10,
+      remainingMines: 10,
+      boardMatrix: [],
+      gameStatus: GameStatus.NotStarted,
+    };
+
     this._gameState.boardMatrix = this.generateEmptyGameBoard();
     this.gameStateSubject.next(this._gameState);
   }
@@ -70,7 +86,7 @@ export class GameStateService {
       .fill(null)
       .map((x, i) => i)
       .sort(() => Math.random() - 0.5)
-      .filter((x, i) => i !== omit)
+      .filter((x) => x !== omit)
       .slice(0, this._gameState.mineCount);
 
     mines.forEach((mine) => {
@@ -111,19 +127,93 @@ export class GameStateService {
       });
     });
 
-    // TODO: revealing every cell for debug reasons, should remove this later
-    return boardData.map(row => row.map(col => ({ ...col, isRevealed: true })));
+    return boardData;
   }
 
-  startGame(row: number, column: number) {
-    this.gameState$.pipe(first()).subscribe((gameState) => {
-      if (gameState.gameStatus === GameStatus.NotStarted) {
-        this.gameStateSubject.next({
-          ...this._gameState,
-          boardMatrix: this.generateBoard((row - 1) * gameState.columns + (column - 1)),
-          gameStatus: GameStatus.InProgress,
-        });
+  startGame(gameState: GameState, row: number, column: number): GameState {
+    return {
+      ...gameState,
+      boardMatrix: this.generateBoard(row * gameState.columns + column),
+      gameStatus: GameStatus.InProgress,
+    };
+  }
+
+  revealCell(gameState: GameState, row: number, column: number): GameState {
+    const cell = gameState.boardMatrix[row][column];
+    const boardData = gameState.boardMatrix;
+    let gameStatus = gameState.gameStatus;
+
+    const flaggedCells = boardData.flat().filter((cell) => cell.isFlagged).length;
+
+    if (cell.isRevealed || cell.isFlagged) {
+      return { ...gameState };
+    }
+
+    if (cell.isMine) {
+      // game over
+      boardData[row][column] = { ...cell, isRevealed: true, isExploded: true };
+      gameStatus = GameStatus.Lost;
+    } else {
+      if (cell.neighborCount === 0) {
+        // reveal neighbours
+        boardData[row][column] = { ...cell, isRevealed: true };
       }
+
+      if (cell.neighborCount > 0) {
+        // reveal only clicked cell
+        boardData[row][column] = { ...cell, isRevealed: true };
+      }
+    }
+
+    return  {
+      ...gameState,
+      gameStatus: gameStatus,
+      remainingMines: gameState.mineCount - flaggedCells,
+      boardMatrix: [ ...boardData ],
+    };
+  }
+
+  cellClicked(row: number, column: number) {
+    this.gameState$.pipe(first()).subscribe((gameState) => {
+      let newGameState = { ...gameState };
+
+      if (newGameState.gameStatus === GameStatus.NotStarted) {
+        newGameState = this.startGame(newGameState, row, column);
+      }
+
+      if (newGameState.gameStatus === GameStatus.InProgress) {
+        newGameState = this.revealCell(newGameState, row, column);
+      }
+
+      this.gameStateSubject.next(newGameState);
+    });
+  }
+
+  cellRightClicked(row: number, column: number) {
+    this.gameState$.pipe(first()).subscribe((gameState) => {
+      let newGameState = { ...gameState };
+
+      if (newGameState.gameStatus === GameStatus.NotStarted) {
+        newGameState = this.startGame(newGameState, row, column);
+      }
+
+      const cell = newGameState.boardMatrix[row][column];
+
+      if (!cell.isRevealed) {
+        newGameState.boardMatrix[row][column] = {
+          ...cell,
+          isFlagged: !newGameState.boardMatrix[row][column].isFlagged,
+        };
+      }
+
+      const flaggedCellCount = newGameState.boardMatrix.flat().filter((cell) => cell.isFlagged).length;
+
+      newGameState = {
+        ...newGameState,
+        remainingMines: newGameState.mineCount - flaggedCellCount,
+      }
+
+      this.gameStateSubject.next(newGameState);
     });
   }
 }
