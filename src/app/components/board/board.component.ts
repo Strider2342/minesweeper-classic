@@ -19,6 +19,6 @@ export class BoardComponent {
   }
 
   cellClicked(cell: CellState) {
-    this.gameStateFacade.startGame();
+    this.gameStateFacade.startGame(cell.row, cell.column);
   }
 }

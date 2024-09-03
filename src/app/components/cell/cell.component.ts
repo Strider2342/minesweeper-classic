@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 export interface CellState {
+  row: number;
+  column: number;
   isFlagged: boolean;
   isRevealed: boolean;
   isMine: boolean;

@@ -17,7 +17,7 @@ export class GameStateFacade {
     return this.gameState$.pipe(map((state) => state.boardMatrix));
   }
 
-  startGame() {
-    this.service.startGame();
+  startGame(row: number, column: number) {
+    this.service.startGame(row, column);
   }
 }

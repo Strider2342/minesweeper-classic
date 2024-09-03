@@ -27,14 +27,8 @@ export class GameStateService {
   private _gameState: GameState = {
     rows: 9,
     columns: 9,
-    mineCount: 30,
-    boardMatrix: Array(9).fill(Array(9).fill({
-      isFlagged: false,
-      isRevealed: false,
-      isMine: false,
-      isExploded: false,
-      neighborCount: 0
-    })),
+    mineCount: 10,
+    boardMatrix: [],
     gameStatus: GameStatus.NotStarted,
   };
 
@@ -44,23 +38,30 @@ export class GameStateService {
     return this.gameStateSubject.asObservable();
   }
 
+  constructor() {
+    this._gameState.boardMatrix = this.generateEmptyGameBoard();
+    this.gameStateSubject.next(this._gameState);
+  }
+
   generateEmptyGameBoard(): CellState[][] {
     const boardData = new Array(this._gameState.rows).fill(null);
 
     boardData.forEach((row, rowIndex) => {
       boardData[rowIndex] = new Array(this._gameState.columns).fill({
+        row: rowIndex,
+        column: 0,
         isFlagged: false,
-        isRevealed: true,
+        isRevealed: false,
         isMine: false,
         isExploded: false,
         neighborCount: 0
-      });
+      }).map((cell, columnIndex) => ({ ...cell, column: columnIndex }));
     });
 
     return boardData;
   }
 
-  generateBoard(): CellState[][] {
+  generateBoard(omit?: number): CellState[][] {
     // generate empty board
     const boardData = this.generateEmptyGameBoard();
 
@@ -69,6 +70,7 @@ export class GameStateService {
       .fill(null)
       .map((x, i) => i)
       .sort(() => Math.random() - 0.5)
+      .filter((x, i) => i !== omit)
       .slice(0, this._gameState.mineCount);
 
     mines.forEach((mine) => {
@@ -109,16 +111,16 @@ export class GameStateService {
       });
     });
 
-    return boardData;
+    // TODO: revealing every cell for debug reasons, should remove this later
+    return boardData.map(row => row.map(col => ({ ...col, isRevealed: true })));
   }
 
-  startGame() {
+  startGame(row: number, column: number) {
     this.gameState$.pipe(first()).subscribe((gameState) => {
       if (gameState.gameStatus === GameStatus.NotStarted) {
-        console.log(gameState.gameStatus);
         this.gameStateSubject.next({
           ...this._gameState,
-          boardMatrix: this.generateBoard(),
+          boardMatrix: this.generateBoard((row - 1) * gameState.columns + (column - 1)),
           gameStatus: GameStatus.InProgress,
         });
       }
