@@ -1,14 +1,14 @@
-<div class="sun-button win-95-border-emboss" [class.clicked]="mouseDown">
+<div class="sun-button win-95-border-emboss" [class.clicked]="mouseDown && mouseDownStartedHere">
   @if (playerStatus === PlayerStatus.Alive) {
-    <img src="images/player-alive.png">
+    <img src="images/player-alive.png" draggable="false">
   }
   @if (playerStatus === PlayerStatus.Scared) {
-    <!-- <img src="images/player-scared.png"> -->
+    <!-- <img src="images/player-scared.png" draggable="false"> -->
   }
   @if (playerStatus === PlayerStatus.Dead) {
-    <img src="images/player-dead.png">
+    <img src="images/player-dead.png" draggable="false">
   }
   @if (playerStatus === PlayerStatus.Won) {
-    <!-- <img src="images/player-won.png"> -->
+    <!-- <img src="images/player-won.png" draggable="false"> -->
   }
 </div>

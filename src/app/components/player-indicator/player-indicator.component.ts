@@ -20,12 +20,26 @@ export class PlayerIndicatorComponent {
   @HostListener('mousedown')
   onMouseDown() {
     this.mouseDown = true;
+    this.mouseDownStartedHere = true;
   }
 
   @HostListener('mouseup')
   onMouseUp() {
     this.mouseDown = false;
+    this.mouseDownStartedHere = false;
     this.clicked.emit();
+  }
+
+  @HostListener('mouseenter', ['$event'])
+  onMouseEnter($event: MouseEvent) {
+    if ($event.buttons === 1) {
+      this.mouseDown = true;
+    }
+  }
+
+  @HostListener('mouseleave')
+  onMouseLeave() {
+    this.mouseDown = false;
   }
 
   @Input() set gameStatus(value: GameStatus | null) {
@@ -45,6 +59,7 @@ export class PlayerIndicatorComponent {
   @Output() clicked: EventEmitter<void> = new EventEmitter();
 
   mouseDown: boolean = false;
+  mouseDownStartedHere: boolean = false;
 
   playerStatus = PlayerStatus.Alive;
 }
