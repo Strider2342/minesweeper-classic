@@ -8,7 +8,7 @@ export interface CellState {
   isRevealed: boolean;
   isMine: boolean;
   isExploded: boolean;
-  neighborCount: number; // TODO: fix typo
+  neighbourCount: number;
 }
 
 @Component({

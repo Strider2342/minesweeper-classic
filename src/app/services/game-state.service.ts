@@ -70,7 +70,7 @@ export class GameStateService {
         isRevealed: false,
         isMine: false,
         isExploded: false,
-        neighborCount: 0
+        neighbourCount: 0
       }).map((cell, columnIndex) => ({ ...cell, column: columnIndex }));
     });
 
@@ -122,7 +122,7 @@ export class GameStateService {
 
         boardData[rowIndex][columnIndex] = {
           ...boardData[rowIndex][columnIndex],
-          neighborCount: mineCount,
+          neighbourCount: mineCount,
         };
       });
     });
@@ -154,7 +154,7 @@ export class GameStateService {
       boardData[row][column] = { ...cell, isRevealed: true, isExploded: true };
       gameStatus = GameStatus.Lost;
     } else {
-      if (cell.neighborCount === 0) {
+      if (cell.neighbourCount === 0) {
         // reveal neighbours
         boardData[row][column] = { ...cell, isRevealed: true };
 
@@ -163,7 +163,7 @@ export class GameStateService {
         neighbours.forEach((neighbour) => this.revealCell(gameState, neighbour.row, neighbour.column));
       }
 
-      if (cell.neighborCount > 0) {
+      if (cell.neighbourCount > 0) {
         // reveal only clicked cell
         boardData[row][column] = { ...cell, isRevealed: true };
       }
