@@ -24,6 +24,10 @@ export class BoardComponent {
     this.gameStateFacade.cellClicked(cell.row, cell.column);
   }
 
+  cellMiddleClicked(cell: CellState) {
+    this.gameStateFacade.cellMiddleClicked(cell.row, cell.column);
+  }
+
   cellRightClicked(cell: CellState) {
     this.gameStateFacade.cellRightClicked(cell.row, cell.column);
   }

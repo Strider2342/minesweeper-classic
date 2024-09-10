@@ -25,6 +25,10 @@ export class GameStateFacade {
     this.service.cellClicked(row, column);
   }
 
+  cellMiddleClicked(row: number, column: number) {
+    this.service.cellMiddleClicked(row, column);
+  }
+
   cellRightClicked(row: number, column: number) {
     this.service.cellRightClicked(row, column);
   }

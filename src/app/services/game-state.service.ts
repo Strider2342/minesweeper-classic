@@ -157,6 +157,10 @@ export class GameStateService {
       if (cell.neighborCount === 0) {
         // reveal neighbours
         boardData[row][column] = { ...cell, isRevealed: true };
+
+        let neighbours = this.getUntouchedCellNeighbours(gameState, row, column);
+
+        neighbours.forEach((neighbour) => this.revealCell(gameState, neighbour.row, neighbour.column));
       }
 
       if (cell.neighborCount > 0) {
@@ -173,6 +177,30 @@ export class GameStateService {
     };
   }
 
+  revealNeighboursOfCell(gameState: GameState, row: number, column: number): GameState {
+    // TODO: implement this
+    return gameState;
+  }
+
+  getUntouchedCellNeighbours(gameState: GameState, row: number, column: number): Set<CellState> {
+    let neighbours = new Set<CellState>();
+
+    for (let i = row - 1; i <= row + 1; i++) {
+      for (let j = column - 1; j <= column + 1; j++) {
+        const outOfBounds = i < 0 || i >= gameState.rows || j < 0 || j >= gameState.columns;
+        const isSameCell = i === row && j === column;
+
+        if (outOfBounds || isSameCell) {
+          continue;
+        }
+
+        neighbours.add(gameState.boardMatrix[i][j]);
+      }
+    }
+
+    return neighbours;
+  }
+
   cellClicked(row: number, column: number) {
     this.gameState$.pipe(first()).subscribe((gameState) => {
       let newGameState = { ...gameState };
@@ -183,6 +211,18 @@ export class GameStateService {
 
       if (newGameState.gameStatus === GameStatus.InProgress) {
         newGameState = this.revealCell(newGameState, row, column);
+      }
+
+      this.gameStateSubject.next(newGameState);
+    });
+  }
+
+  cellMiddleClicked(row: number, column: number) {
+    this.gameState$.pipe(first()).subscribe((gameState) => {
+      let newGameState = { ...gameState };
+
+      if (newGameState.gameStatus === GameStatus.InProgress) {
+        newGameState = this.revealNeighboursOfCell(newGameState, row, column);
       }
 
       this.gameStateSubject.next(newGameState);

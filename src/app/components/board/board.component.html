@@ -3,7 +3,7 @@
     <div class="matrix-row">
       @for (cell of row; track $index) {
         <app-cell [state]="cell" (cellClicked)="cellClicked($event)"
-          (cellRightClicked)="cellRightClicked($event)">
+          (cellMiddleClicked)="cellMiddleClicked($event)" (cellRightClicked)="cellRightClicked($event)">
         </app-cell>
       }
     </div>
