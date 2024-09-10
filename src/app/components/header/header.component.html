@@ -1,5 +1,5 @@
 <div class="game-header win-95-border">
-  <app-mine-count></app-mine-count>
-  <app-player-indicator></app-player-indicator>
-  <app-timer></app-timer>
+  <app-three-digit-display [value]="remainingMines$ | async"></app-three-digit-display>
+  <app-player-indicator [gameStatus]="gameStatus$ | async" (click)="handlePlayerClicked()"></app-player-indicator>
+  <app-three-digit-display></app-three-digit-display>
 </div>

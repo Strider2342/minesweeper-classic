@@ -1,15 +1,32 @@
 import { Component } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { map, Observable } from 'rxjs';
 
-import { MineCountComponent } from '../mine-count/mine-count.component';
-import { TimerComponent } from '../timer/timer.component';
 import { PlayerIndicatorComponent } from '../player-indicator/player-indicator.component';
+import { GameStateFacade } from '../../services/game-state.facade';
+import { GameStatus } from '../../services/game-state.service';
+import { ThreeDigitDisplayComponent } from '../three-digit-display/three-digit-display.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [MineCountComponent, PlayerIndicatorComponent, TimerComponent],
+  imports: [
+    AsyncPipe,
+    PlayerIndicatorComponent,
+    ThreeDigitDisplayComponent,
+  ],
   templateUrl: './header.component.html',
 })
 export class HeaderComponent {
-  title = 'minesweeper-classic';
+  gameStatus$: Observable<GameStatus>;
+  remainingMines$: Observable<number>;
+
+  constructor(private gameStateFacade: GameStateFacade) {
+    this.gameStatus$ = this.gameStateFacade.gameState$.pipe(map((state) => state.gameStatus));
+    this.remainingMines$ = this.gameStateFacade.gameState$.pipe(map((state) => state.remainingMines));
+  }
+
+  handlePlayerClicked() {
+    this.gameStateFacade.init();
+  }
 }
